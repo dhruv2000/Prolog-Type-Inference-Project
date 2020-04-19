@@ -1,1 +1,0 @@
-# Prolog-Type-Inference-Project
