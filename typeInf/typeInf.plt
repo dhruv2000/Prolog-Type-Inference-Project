@@ -8,6 +8,7 @@
     delegeGVars() predicate to clean up gvar().
 */
 
+% FType TESTS-------------------------------------------
 /* ADDING */
 
 % tests for typeExp
@@ -56,49 +57,62 @@ test(typeExp_fminus_F, [fail]) :-
 test(typeExp_fminus_T, [true(T == float)]) :-
     typeExp(fminus(float, float), T).
 
-% tests for typeExp
-test(typeExp_iplus) :- 
-    typeExp(iplus(int,int), int).
-
-% this test should fail
-test(typeExp_iplus_F, [fail]) :-
-    typeExp(iplus(int, int), float).
-
-% This should pass if T is an int
-test(typeExp_iplus_T, [true(T == int)]) :-
-    typeExp(iplus(int, int), T).
-
-% This should for floats
-test(typeExp_fplus) :- 
-    typeExp(fplus(float,float), float).
-
-test(typeExp_fplus_F, [fail]) :-
-    typeExp(fplus(float, float), int).
-
-test(typeExp_fplus_T, [true(T == float)]) :-
-    typeExp(fplus(float, float), T).
+/* MULTIPLYING */
 
 % tests for typeExp
-test(typeExp_iplus) :- 
-    typeExp(iplus(int,int), int).
+test(typeExp_imult) :- 
+    typeExp(imult(int,int), int).
 
 % this test should fail
-test(typeExp_iplus_F, [fail]) :-
-    typeExp(iplus(int, int), float).
+test(typeExp_imult_F, [fail]) :-
+    typeExp(imult(int, int), float).
 
 % This should pass if T is an int
-test(typeExp_iplus_T, [true(T == int)]) :-
-    typeExp(iplus(int, int), T).
+test(typeExp_imult_T, [true(T == int)]) :-
+    typeExp(imult(int, int), T).
 
 % This should for floats
-test(typeExp_fplus) :- 
-    typeExp(fplus(float,float), float).
+test(typeExp_fmult) :- 
+    typeExp(fmult(float,float), float).
 
-test(typeExp_fplus_F, [fail]) :-
-    typeExp(fplus(float, float), int).
+test(typeExp_fmult_F, [fail]) :-
+    typeExp(fmult(float, float), int).
 
-test(typeExp_fplus_T, [true(T == float)]) :-
-    typeExp(fplus(float, float), T).
+test(typeExp_fmult_T, [true(T == float)]) :-
+    typeExp(fmult(float, float), T).
+
+% tests for typeExp
+test(typeExp_idivide) :- 
+    typeExp(idivide(int,int), int).
+
+% this test should fail
+test(typeExp_idivide_F, [fail]) :-
+    typeExp(idivide(int, int), float).
+
+% This should pass if T is an int
+test(typeExp_idivide_T, [true(T == int)]) :-
+    typeExp(idivide(int, int), T).
+
+% This should for floats
+test(typeExp_fdivide) :- 
+    typeExp(fdivide(float,float), float).
+
+test(typeExp_fdivide_F, [fail]) :-
+    typeExp(fdivide(float, float), int).
+
+test(typeExp_fdivide_T, [true(T == float)]) :-
+    typeExp(fdivide(float, float), T).
+
+% Float to Int test
+test(fToInt, [true(T == int)]) :-
+    typeExp(fToInt(float), T).
+
+% % Int to Float test
+% test(itoFloat, [true(T == float)]) :-
+%     typeExp(fToInt(int), T).
+
+% Ftype tests END ------------------------------------------------
+
 % NOTE: use nondet as option to test if the test is nondeterministic
 
 % test for statement with state cleaning
