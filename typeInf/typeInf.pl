@@ -43,15 +43,24 @@ hasAdd(float).
 /* predicate to infer types for boolean expressions */
 typeBoolExp(true).
 typeBoolExp(false). 
+/* Less than and less than or equal to */
 typeBoolExp( X < Y) :- 
     typeExp(X, T),
     typeExp(Y, T),
     hasComparison(T).
-typeBoolExp( X > Y) :- 
+typeBoolExp( X => Y) :- 
     typeExp(X, T),
     typeExp(Y, T),
     hasComparison(T).
 
+typeBoolExp( X > Y) :- 
+    typeExp(X, T),
+    typeExp(Y, T),
+    hasComparison(T).
+typeBoolExp( X >= Y) :- 
+    typeExp(X, T),
+    typeExp(Y, T),
+    hasComparison(T).
 
 /* TODO: add statements types and their type checking */
 

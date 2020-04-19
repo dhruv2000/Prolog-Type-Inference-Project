@@ -8,6 +8,8 @@
     delegeGVars() predicate to clean up gvar().
 */
 
+/* ADDING */
+
 % tests for typeExp
 test(typeExp_iplus) :- 
     typeExp(iplus(int,int), int).
@@ -20,16 +22,83 @@ test(typeExp_iplus_F, [fail]) :-
 test(typeExp_iplus_T, [true(T == int)]) :-
     typeExp(iplus(int, int), T).
 
+% This should for floats
 test(typeExp_fplus) :- 
     typeExp(fplus(float,float), float).
+
 test(typeExp_fplus_F, [fail]) :-
     typeExp(fplus(float, float), int).
+
 test(typeExp_fplus_T, [true(T == float)]) :-
     typeExp(fplus(float, float), T).
 
+/* SUBTRACTING */
+
+% tests for typeExp
+test(typeExp_iminus) :- 
+    typeExp(iminus(int,int), int).
+
+% this test should fail
+test(typeExp_iminus_F, [fail]) :-
+    typeExp(iminus(int, int), float).
+
+% This should pass if T is an int
+test(typeExp_iminus_T, [true(T == int)]) :-
+    typeExp(iminus(int, int), T).
+
+% This should for floats
+test(typeExp_fminus) :- 
+    typeExp(fminus(float,float), float).
+
+test(typeExp_fminus_F, [fail]) :-
+    typeExp(fminus(float, float), int).
+
+test(typeExp_fminus_T, [true(T == float)]) :-
+    typeExp(fminus(float, float), T).
+
+% tests for typeExp
+test(typeExp_iplus) :- 
+    typeExp(iplus(int,int), int).
+
+% this test should fail
+test(typeExp_iplus_F, [fail]) :-
+    typeExp(iplus(int, int), float).
+
+% This should pass if T is an int
 test(typeExp_iplus_T, [true(T == int)]) :-
     typeExp(iplus(int, int), T).
 
+% This should for floats
+test(typeExp_fplus) :- 
+    typeExp(fplus(float,float), float).
+
+test(typeExp_fplus_F, [fail]) :-
+    typeExp(fplus(float, float), int).
+
+test(typeExp_fplus_T, [true(T == float)]) :-
+    typeExp(fplus(float, float), T).
+
+% tests for typeExp
+test(typeExp_iplus) :- 
+    typeExp(iplus(int,int), int).
+
+% this test should fail
+test(typeExp_iplus_F, [fail]) :-
+    typeExp(iplus(int, int), float).
+
+% This should pass if T is an int
+test(typeExp_iplus_T, [true(T == int)]) :-
+    typeExp(iplus(int, int), T).
+
+% This should for floats
+test(typeExp_fplus) :- 
+    typeExp(fplus(float,float), float).
+
+test(typeExp_fplus_F, [fail]) :-
+    typeExp(fplus(float, float), int).
+
+test(typeExp_fplus_T, [true(T == float)]) :-
+    typeExp(fplus(float, float), T).
 % NOTE: use nondet as option to test if the test is nondeterministic
 
 % test for statement with state cleaning
