@@ -104,14 +104,41 @@ test(typeExp_fdivide_T, [true(T == float)]) :-
     typeExp(fdivide(float, float), T).
 
 % Float to Int test
-test(fToInt, [true(T == int)]) :-
-    typeExp(fToInt(float), T).
+test(floatToInt, [true(T == int)]) :-
+    typeExp(floatToInt(float), T).
 
 % % Int to Float test
-% test(itoFloat, [true(T == float)]) :-
-%     typeExp(fToInt(int), T).
+test(intToFloat, [true(T == float)]) :-
+    typeExp(intToFloat(int), T).
 
 % Ftype tests END ------------------------------------------------
+
+% Tests from night
+
+test(typeStatement_vLet, [nondet]) :-
+    typeStatement(vLet(temp, T, iminus(int,int), [imult(int,int)]), unit),
+    assertion(T == int),
+    gvar(temp, int).
+
+test(typeStatement_vLet, [fail]) :-
+    typeStatement(vLet(temp, T, iminus(int,int), [imult(float,float)]), unit),
+    assertion(T == int),
+    gvar(temp, int).
+
+test(typeStatement_for, [nondet]):-
+    typeStatement(for(1, 3, [iplus(int, int)]), ReturnType),
+    assertion(ReturnType == int).
+
+test(typeStatement_for, [fail]):-
+    typeStatement(for(1, 3, [iplus(int, int)]), float).
+
+test(typeStatement_for, [nondet]):-
+    typeStatement(for(1, 3, [iplus(int, int)]), int).
+
+test(code_block, [nondet]):-
+    typeStatement(begin([iplus(X,Y)]), ReturnType),
+    assertion(X == int), assertion(Y == int), 
+    assertion(ReturnType == int).
 
 % NOTE: use nondet as option to test if the test is nondeterministic
 
