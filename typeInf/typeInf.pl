@@ -63,10 +63,30 @@ typeBoolExp( X >= Y) :-
     typeExp(Y, T),
     hasComparison(T).
 
+typeBoolExp( X == Y) :- 
+    typeExp(X, T),
+    typeExp(Y, T),
+    hasComparison(T).
+
+typeBoolExp( X \= Y) :- 
+    typeExp(X, T),
+    typeExp(Y, T),
+    hasComparison(T).
+
 /* TODO: add statements types and their type checking */
 
 typeStatement(X, T) :-
     typeExp(X, T).
+
+% This should deal with multiple let in's 
+% ex. let x = 5, z = 10 in y = x + 9 in z + y
+/* Same as Dobra gvLet parameters + a list of statements for the in part of the let statement*/
+typeStatement(vLet(Name, T, Code, L), unit):-
+    atom(Name),
+    typeExp(Code, T),
+    bType(T),
+    asserta(gvar(Name, T)),
+    typeCode(L, T). % This is the recursive call to the rest of the list
 
 /* global variable definition
     Example:
@@ -77,6 +97,18 @@ typeStatement(gvLet(Name, T, Code), unit):-
     typeExp(Code, T), /* infer the type of Code and ensure it is T */
     bType(T), /* make sure we have an infered type */
     asserta(gvar(Name, T)). /* add definition to database */
+
+/*FOR Loop Statement */
+% The start and end variables have to be ints
+% for x = 1 to 3 do [List of Statments]
+typeStatement(for(Start, End, List), ReturnType):-
+    typeExp(Start, int),
+    typeExp(End, int),
+    typeCode(List, ReturnType). % typeCode goes through the lsit trecursively evaluating all the statements
+
+% Code Blocks
+typeStatement(begin(List), ReturnType):-
+    typeCode(List, ReturnType).
 
 /* if statements are encodes as:
     if(condition:Boolean, trueCode: [Statements], falseCode: [Statements])
@@ -104,6 +136,7 @@ typeStatement(callFunction(Name, [Vars]), T) :-
 /* Code is simply a list of statements. The type is 
     the type of the last statement 
 */
+% This is recursive so that it calls a list of statements if the stuff is there
 typeCode([S], T):-typeStatement(S, T).
 typeCode([S, S2|Code], T):-
     typeStatement(S,_T),
@@ -177,8 +210,8 @@ fType(or, [bool,bool,bool]).
 % fType((-), [T, T, T]) :- hasAdd(T). /* added this */
 % fType((/), [T, T, T]) :- hasAdd(T). /* added this */
 % fType((*), [T, T, T]) :- hasAdd(T). /* added this */ 
-fType(fToInt, [float,int]).
-fType(iToFloat, [int,float]).
+fType(floatToInt, [float,int]).
+fType(intToFloat, [int,float]).
 fType(print, [_X, unit]). /* simple print */
 
 /* Find function signature
