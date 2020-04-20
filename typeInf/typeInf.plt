@@ -122,8 +122,9 @@ test(typeExp_and) :-
 test(typeExp_and_f, [fail]) :-
     typeExp(and(bool, bool), float).
 
-test(typeExp_and_T, [true(T == true)]) :-
-    typeExp(and(bool, bool), T). 
+test(typeExp_and_T, [nondet]) :-
+    typeExp(and(bool, bool), T),
+    assertion(T == true).
 
 /* OR */
 test(typeExp_or) :-  
@@ -132,8 +133,10 @@ test(typeExp_or) :-
 test(typeExp_and_f, [fail]) :-
     typeExp(or(bool, bool), float).
 
-test(typeExp_or_T, [true(T == true)]) :-
-    typeExp(and(bool, bool), T). 
+test(typeExp_or_T, [nondet]) :-
+    typeExp(and(bool, bool), T),
+    assertion(T == true).
+
 
 % Ftype tests END ------------------------------------------------
 
