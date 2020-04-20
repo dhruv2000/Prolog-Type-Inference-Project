@@ -137,6 +137,27 @@ test(typeExp_or_T, [true(T == true)]) :-
 
 % Ftype tests END ------------------------------------------------
 
+/* BLOCK */
+test(infer_block) :-
+    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], T).
+
+test(infer_block_f, [fail]) :-
+    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], int).
+
+test(infer_block_T, [true(T == int)]) :-
+    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5), 1 + 99], T).
+
+/* Function Definition and Calling (from Marco's examples)*/
+%test definining and calling a function 
+test(function_f, [fail, nondet]) :-
+    infer([defFunction(test, [int, int, bool], [1 < 3]), callFunction(test, [float, int, bool])], T),
+
+test(function_types, [nondet]) :-
+    infer([defFunction(test, [int, int, bool], [1 < 3]), callFunction(test, [X, Y, bool])], T),
+        assertion(X==Y),
+        assertion(Y==int),
+        assertion(T==bool).
+
 % NOTE: use nondet as option to test if the test is nondeterministic
 
 % test for statement with state cleaning

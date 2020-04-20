@@ -86,6 +86,21 @@ typeStatement(if(Cond, TrueB, FalseB), T) :-
     typeCode(TrueB, T),
     typeCode(FalseB, T).
 
+typeStatement(block(Statements), T) :-
+    typeCode(Statements, T).
+
+typeStatement(defFunction(Name, Types, Statements), T) :-
+    typeCode(Types, T),
+    typeCode(Statements, T),
+    asserta(gvar(Name, Types)).
+
+typeStatement(callFunction(Name, [Vars]), T) :-
+    is_list(Vars),
+    gvar(Name, Y),
+    is_list(Y),
+    typeExpList(Y, Vars),
+    typeCode(Vars, T).
+
 /* Code is simply a list of statements. The type is 
     the type of the last statement 
 */
