@@ -57,6 +57,7 @@ typeBoolExp( X > Y) :-
     typeExp(X, T),
     typeExp(Y, T),
     hasComparison(T).
+
 typeBoolExp( X >= Y) :- 
     typeExp(X, T),
     typeExp(Y, T),
@@ -148,12 +149,19 @@ iplus :: int -> int -> int
 
 fType(iplus, [int,int,int]).
 fType(fplus, [float, float, float]).
+fType(iminus, [int,int,int]).
+fType(fminus, [float, float, float]).
+fType(imult, [int,int,int]).
+fType(fmult, [float, float, float]).
+fType(idivide, [int,int,int]).
+fType(fdivide, [float, float, float]).
 fType((+), [T, T, T]) :- hasAdd(T).
-fType((-), [T, T, T]) :- hasAdd(T). /* added this */
-fType((/), [T, T, T]) :- hasAdd(T). /* added this */
-fType((*), [T, T, T]) :- hasAdd(T). /* added this */
 fType(and, [bool,bool,bool]).
 fType(or, [bool,bool,bool]).
+% hasAdd only worked for type T of int... if it was a float, it resulted in false.
+% fType((-), [T, T, T]) :- hasAdd(T). /* added this */
+% fType((/), [T, T, T]) :- hasAdd(T). /* added this */
+% fType((*), [T, T, T]) :- hasAdd(T). /* added this */ 
 fType(fToInt, [float,int]).
 fType(iToFloat, [int,float]).
 fType(print, [_X, unit]). /* simple print */
