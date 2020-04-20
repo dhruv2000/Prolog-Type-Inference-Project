@@ -99,6 +99,28 @@ test(typeExp_fplus_F, [fail]) :-
 
 test(typeExp_fplus_T, [true(T == float)]) :-
     typeExp(fplus(float, float), T).
+
+/* AND */
+% test for and 
+test(typeExp_and) :-  
+    typeExp(and(bool,bool), bool).
+
+test(typeExp_and_f, [fail]) :-
+    typeExp(and(bool, bool), float).
+
+test(typeExp_and_T, [true(T == true)]) :-
+    typeExp(and(bool, bool), T). 
+
+/* OR */
+test(typeExp_or) :-  
+    typeExp(or(bool,bool), bool).
+
+test(typeExp_and_f, [fail]) :-
+    typeExp(or(bool, bool), float).
+
+test(typeExp_or_T, [true(T == true)]) :-
+    typeExp(and(bool, bool), T). 
+
 % NOTE: use nondet as option to test if the test is nondeterministic
 
 % test for statement with state cleaning

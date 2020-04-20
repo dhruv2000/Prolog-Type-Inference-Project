@@ -48,7 +48,7 @@ typeBoolExp( X < Y) :-
     typeExp(X, T),
     typeExp(Y, T),
     hasComparison(T).
-typeBoolExp( X => Y) :- 
+typeBoolExp( X =< Y) :- 
     typeExp(X, T),
     typeExp(Y, T),
     hasComparison(T).
@@ -152,6 +152,8 @@ fType((+), [T, T, T]) :- hasAdd(T).
 fType((-), [T, T, T]) :- hasAdd(T). /* added this */
 fType((/), [T, T, T]) :- hasAdd(T). /* added this */
 fType((*), [T, T, T]) :- hasAdd(T). /* added this */
+fType(and, [bool,bool,bool]).
+fType(or, [bool,bool,bool]).
 fType(fToInt, [float,int]).
 fType(iToFloat, [int,float]).
 fType(print, [_X, unit]). /* simple print */
