@@ -154,7 +154,8 @@ test(infer_block_T, [nondet]) :-
 /* Function Definition and Calling (from Marco's examples)*/
 %test definining and calling a function 
 test(function_f, [fail, nondet]) :-
-    infer([defFunction(test, [int, int, bool], [1 < 3]), callFunction(test, [float, int, bool])], T).
+    infer([defFunction(test, [int, int, bool], [1 < 3]), callFunction(test, [float, int, bool])], T),
+        assertion(T==true).
 
 test(function_types, [nondet]) :-
     infer([defFunction(test, [int, int, bool], [1 < 3]), callFunction(test, [X, Y, bool])], T),
