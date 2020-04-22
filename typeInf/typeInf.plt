@@ -163,6 +163,42 @@ test(function_types, [nondet]) :-
         assertion(Y==int),
         assertion(T==bool).
 
+%expressions as statements
+test(exprStat, [nondet]) :-
+    infer([
+        int,
+        float,
+        bool
+        ], Ret),
+        assertion(Ret==bool).
+
+%test if statements
+test(ifStat, [nondet]) :-
+    infer([
+        if(>(float,float), [iplus(int,int)], [iminus(int,int)])
+        ], Ret),
+        assertion(Ret==int).
+
+% %test nested let in statements
+% test(letIn, [nondet]) :-
+%     deleteGVars(),
+%     infer([
+%         lvLet(x, int, iplus(int,int), [
+%             lvLet(y, float, fplus(float,float), [
+%                 lvLet(z, bool, <(float,float), [
+%                     getVar(x,X),
+%                     getVar(y,Y),
+%                     getVar(z,Z)
+%                 ])
+%             ])
+%         ])
+        
+%         ], unit),
+
+%         assertion(X==int),
+%         assertion(Y==float),
+%         assertion(Z==bool).
+
 % Tests from night
 
 test(typeStatement_vLet, [nondet]) :-
