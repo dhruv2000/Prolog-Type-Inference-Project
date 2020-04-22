@@ -126,7 +126,7 @@ typeStatement(defFunction(Name, Types, Statements), T) :-
     typeCode(Statements, T),
     asserta(gvar(Name, Types)).
 
-typeStatement(callFunction(Name, [Vars]), T) :-
+typeStatement(callFunction(Name, Vars), T) :-
     is_list(Vars),
     gvar(Name, Y),
     is_list(Y),
