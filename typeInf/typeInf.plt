@@ -142,14 +142,14 @@ test(typeExp_or_T, [nondet]) :-
 
 
 /* BLOCK */
-test(infer_block) :-
-    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], T).
+test(infer_block, [nondet]) :-
+    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], true).
 
 test(infer_block_f, [fail]) :-
     infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], int).
 
-test(infer_block_T, [true(T == int)]) :-
-    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5), 1 + 99], T).
+test(infer_block_T, [nondet]) :-
+    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5), 1 + 99], int).
 
 /* Function Definition and Calling (from Marco's examples)*/
 %test definining and calling a function 
