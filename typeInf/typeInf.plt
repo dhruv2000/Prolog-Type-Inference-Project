@@ -93,7 +93,7 @@ test(typeExp_idivide_F, [fail]) :-
 test(typeExp_idivide_T, [true(T == int)]) :-
     typeExp(idivide(int, int), T).
 
-% This should for floats
+% This should work for floats
 test(typeExp_fdivide) :- 
     typeExp(fdivide(float,float), float).
 
@@ -114,8 +114,36 @@ test(intToFloat, [true(T == float)]) :-
 test(typeExp_fplus_T, [true(T == float)]) :-
     typeExp(fplus(float, float), T).
 
+/* BOOLEAN EXPRESSIONS */
+
+%  INTEGERS
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(>(int, int), T).
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(<(int, int), T).
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(==(int, int), T).
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(\=(int, int), T).
+
+% FLOATS
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(>(float, float), T).
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(<(float, float), T).
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(==(float, float), T).
+
+test(typeExp_boolean, [true(T == bool), nondet]):-
+    typeExp(\=(float, float), T).
+
 /* AND */
-% test for and 
 test(typeExp_and) :-  
     typeExp(and(bool,bool), bool).
 
@@ -140,13 +168,15 @@ test(typeExp_or_T, [nondet]) :-
 
 % Ftype tests END ------------------------------------------------
 
+/* INFER TESTS */%------------------------------------------------
 
 /* BLOCK */
 test(infer_block, [nondet]) :-
     infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], true).
 
+%This one is causing problems
 test(infer_block_f, [fail]) :-
-    infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5)], int).
+    infer([1 + 1, 1 < 4], int).
 
 test(infer_block_T, [nondet]) :-
     infer([1 + 1, 1 < 4, and(11 < 3, 3 > 5), 1 + 99], int).
@@ -169,62 +199,134 @@ test(exprStat, [nondet]) :-
         int,
         float,
         bool
-        ], Ret),
-        assertion(Ret==bool).
+        ], T),
+        assertion(T==bool).
 
 %test if statements
 test(ifStat, [nondet]) :-
     infer([
         if(>(float,float), [iplus(int,int)], [iminus(int,int)])
-        ], Ret),
-        assertion(Ret==int).
+        ], T),
+        assertion(T==int).
 
-% %test nested let in statements
-% test(letIn, [nondet]) :-
-%     deleteGVars(),
-%     infer([
-%         lvLet(x, int, iplus(int,int), [
-%             lvLet(y, float, fplus(float,float), [
-%                 lvLet(z, bool, <(float,float), [
-%                     getVar(x,X),
-%                     getVar(y,Y),
-%                     getVar(z,Z)
-%                 ])
-%             ])
-%         ])
-        
-%         ], unit),
+test(varLet_1, [nondet]):-
+    infer([ vLet(varName, int, iplus(int,int), [iplus(int,int)]) ], unit),
+    gvar(varName,int).
 
-%         assertion(X==int),
-%         assertion(Y==float),
-%         assertion(Z==bool).
+test(varLet_2, [nondet]):-
+    infer([gvLet(varName, T, idivide(A, B)), gvLet(varName, T, idivide(A, B))], unit),
+    assertion(T==int), assertion(A==int), assertion(B=int),
+    gvar(varName,int).
 
-% Tests from night
+test(varLet_3, [nondet]):-
+    infer([gvLet(varName, T, fdivide(A, B)), gvLet(varName, T, fdivide(A, B))], unit),
+    assertion(T==float), assertion(A==float), assertion(B=float),
+    gvar(varName,float).
 
+test(infer_Statement_1, [nondet]) :-
+    infer([ atom, fminus(float,float), ==(int, int) ], T),
+    assertion(T==bool).
+
+test(infer_Statement_2, [nondet]) :-
+    infer([ string, fdivide(float,float), \=(int, int) ], T),
+    assertion(T==bool).
+
+test(infer_for, [nondet]) :-
+    infer([ for(1, 3, [print(2000)]) ], T),
+    assertion(T==unit).
+
+test(test_nested_for, [nondet]) :-
+    infer([ for(1, 3, [ for(1, 3, [print(2000)]) ]) ], T),
+    assertion(T==unit).
+
+test(forifprint, [nondet]) :-
+    infer([ for(1, 3, [ if(==(float,float), [iminus(int,int)], [idivide(int,int)]), print(2000) ]) ], T),
+    assertion(T==unit).
+
+test(infer_if_Statement, [nondet]) :-
+    infer([ if(>(int,int), [idivide(int,int)], [imult(int,int)]), print(200) ], T),
+    assertion(T==unit).
+
+test(infer_if_Statement_2, [nondet]) :-
+    infer([ if(<(float,float), [idivide(int,int)], [iplus(int,int)])], T),
+    assertion(T==int).
+
+test(test_letIn, [nondet]) :-
+    % This is to ensure that it is a local variable
+    deleteGVars(),
+    infer([ 
+        vLet(dhruv, int, iplus(int,int), 
+            [
+                idivide(int, int),
+                iplus(int,int),
+                floatToInt(float)
+            ]) 
+        ], unit).
+    gvar(dhruv,int).
+
+test(test_letIn_2_Nested, [nondet]) :-
+    % This is to ensure that it is a local variable
+    deleteGVars(),
+    infer([ 
+        vLet(dhruvP, float, fmult(float,float), 
+            [
+                fminus(float, float),
+                fplus(float,float),
+                intToFloat(int)
+            ]) 
+        ], unit).
+    gvar(dhruvP,float).
+
+
+test(test_Statement_3, [nondet]) :-
+    infer([ +(int, +(int,int) ) ], T),
+    assertion(T==int).
+
+test(test_Statement_3, [nondet]) :-
+    infer([ +(int, +(int,int) ) ], T),
+    assertion(T==int).
+/* INFER TESTS */%------------------------------------------------
+
+/* Statement TESTS */%------------------------------------------------
+
+%  Defining and calling function
+test(function_f, [nondet]) :-
+    typeStatement(defFunction(test, [int, int, bool], [1 < 3]), T),
+    typeStatement(callFunction(test, [int, int, bool]), T),
+    assertion(T==bool).
+
+% variable let in statemtent
 test(typeStatement_vLet, [nondet]) :-
     typeStatement(vLet(temp, T, iminus(int,int), [imult(int,int)]), unit),
     assertion(T == int),
     gvar(temp, int).
 
+% failing variable let in bc of float
 test(typeStatement_vLet, [fail]) :-
     typeStatement(vLet(temp, T, iminus(int,int), [imult(float,float)]), unit),
     assertion(T == int),
     gvar(temp, int).
 
+%for statement
 test(typeStatement_for, [nondet]):-
     typeStatement(for(1, 3, [iplus(int, int)]), ReturnType),
     assertion(ReturnType == int).
 
+% basic failing for test
 test(typeStatement_for, [fail]):-
     typeStatement(for(1, 3, [iplus(int, int)]), float).
 
+% Basic for Test
 test(typeStatement_for, [nondet]):-
     typeStatement(for(1, 3, [iplus(int, int)]), int).
 
+% Tests code Blocks
 test(code_block, [nondet]):-
-    typeStatement(begin([iplus(X,Y)]), ReturnType),
+    typeStatement(block([iplus(X,Y), iminus(X,Y)]), ReturnType),
     assertion(X == int), assertion(Y == int), 
     assertion(ReturnType == int).
+
+/* Statement TESTS */%------------------------------------------------
 
 % NOTE: use nondet as option to test if the test is nondeterministic
 
@@ -252,5 +354,21 @@ test(simple_if, [nondet]) :-
     typeStatement( if(true, [3], [4]), T),
     assertion(T==int).
 
+/* EXTRA CREDIT TESTS */%------------------------------------------------
+
+% This returns true depending on whether or not the type is true or false, making it a sum type expression
+test(sumTypes, [nondet]) :-
+    sumTypes(bool, Type),
+    % This is an OR statement in prolog
+    assertion(Type==true ; Type==false).
+
+% test(sumTypes_2, [nondet]) :-
+%     sumTypes(bool, false).
+%     % This is an OR statement in prolog
+%     % assertion(Type==true ; Type==false).
+
+% test(ec_tupleType1, [nondet]) :-
+%     tupleStatement( fst(int, int), T),
+%     assertion(T==int).
 
 :-end_tests(typeInf).

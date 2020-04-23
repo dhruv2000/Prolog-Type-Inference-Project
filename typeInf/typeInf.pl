@@ -106,9 +106,9 @@ typeStatement(for(Start, End, List), ReturnType):-
     typeExp(End, int),
     typeCode(List, ReturnType). % typeCode goes through the lsit trecursively evaluating all the statements
 
-% Code Blocks
-typeStatement(begin(List), ReturnType):-
-    typeCode(List, ReturnType).
+% % Code Blocks
+% typeStatement(begin(List), ReturnType):-
+%     typeCode(List, ReturnType).
 
 /* if statements are encodes as:
     if(condition:Boolean, trueCode: [Statements], falseCode: [Statements])
@@ -132,6 +132,24 @@ typeStatement(callFunction(Name, Vars), T) :-
     is_list(Y),
     typeExpList(Y, Vars),
     typeCode(Vars, T).
+
+% SUM TYPES BASED OFF OF SCHOOL OF HASKELL
+sumTypes(bool, T) :-
+    typeExp(T, true) | typeExp(T, false).
+
+% % Tuples
+% tupleStatement(fst(X, Y), Type) :-
+%     varTypes(X),
+%     varTypes(Y),
+%     % Expression for the first type
+%     typeExp(X, Type).
+
+% % Tuples
+% tupleStatement(snd(X, Y), Type) :-
+%     varTypes(X),
+%     varTypes(Y),
+%     % Expression for the second type
+%     typeExp(Y, Type).
 
 /* Code is simply a list of statements. The type is 
     the type of the last statement 
@@ -204,6 +222,10 @@ fType(fmult, [float, float, float]).
 fType(idivide, [int,int,int]).
 fType(fdivide, [float, float, float]).
 fType((+), [T, T, T]) :- hasAdd(T).
+fType((>), [T, T, bool]) :- hasComparison(T).
+fType((<), [T, T, bool]) :- hasComparison(T).
+fType((==), [T, T, bool]) :- hasComparison(T).
+fType((\=), [T, T, bool]) :- hasComparison(T).
 fType(and, [bool,bool,bool]).
 fType(or, [bool,bool,bool]).
 % hasAdd only worked for type T of int... if it was a float, it resulted in false.
