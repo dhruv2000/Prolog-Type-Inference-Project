@@ -1,4 +1,5 @@
 :- dynamic gvar/2.
+% :- discontiguous plunit_typeInf:gvar/2.
 
 typeExp(X, int) :-
     integer(X).
@@ -118,38 +119,42 @@ typeStatement(if(Cond, TrueB, FalseB), T) :-
     typeCode(TrueB, T),
     typeCode(FalseB, T).
 
+% Block Statement
 typeStatement(block(Statements), T) :-
     typeCode(Statements, T).
 
+% Defines the function
 typeStatement(defFunction(Name, Types, Statements), T) :-
     typeCode(Types, T),
     typeCode(Statements, T),
     asserta(gvar(Name, Types)).
 
+% Calls the function defined from the above definition
 typeStatement(callFunction(Name, Vars), T) :-
     is_list(Vars),
     gvar(Name, Y),
     is_list(Y),
     typeExpList(Y, Vars),
+    % Checks the return type with the type of the last element from the list
     typeCode(Vars, T).
+
+% % Tuples
+typeStatement(fst(X, Y), Type) :-
+    hasComparison(X),
+    hasComparison(Y),
+    % Expression for the first type
+    typeExp(X, Type).
+
+% Tuples
+typeStatement(snd(X, Y), Type) :-
+    hasComparison(X),
+    hasComparison(Y),
+    % Expression for the second type
+    typeExp(Y, Type).
 
 % SUM TYPES BASED OFF OF SCHOOL OF HASKELL
 sumTypes(bool, T) :-
     typeExp(T, true) | typeExp(T, false).
-
-% % Tuples
-% tupleStatement(fst(X, Y), Type) :-
-%     varTypes(X),
-%     varTypes(Y),
-%     % Expression for the first type
-%     typeExp(X, Type).
-
-% % Tuples
-% tupleStatement(snd(X, Y), Type) :-
-%     varTypes(X),
-%     varTypes(Y),
-%     % Expression for the second type
-%     typeExp(Y, Type).
 
 /* Code is simply a list of statements. The type is 
     the type of the last statement 

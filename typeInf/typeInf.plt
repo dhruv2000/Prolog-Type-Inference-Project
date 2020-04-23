@@ -255,27 +255,27 @@ test(test_letIn, [nondet]) :-
     % This is to ensure that it is a local variable
     deleteGVars(),
     infer([ 
-        vLet(dhruv, int, iplus(int,int), 
+        vLet(j, int, iplus(int,int), 
             [
                 idivide(int, int),
                 iplus(int,int),
                 floatToInt(float)
             ]) 
         ], unit).
-    gvar(dhruv,int).
+    gvar(j,int).
 
 test(test_letIn_2_Nested, [nondet]) :-
     % This is to ensure that it is a local variable
     deleteGVars(),
     infer([ 
-        vLet(dhruvP, float, fmult(float,float), 
+        vLet(d, float, fmult(float,float), 
             [
                 fminus(float, float),
                 fplus(float,float),
                 intToFloat(int)
             ]) 
         ], unit).
-    gvar(dhruvP,float).
+    gvar(d,float).
 
 
 test(test_Statement_3, [nondet]) :-
@@ -362,13 +362,15 @@ test(sumTypes, [nondet]) :-
     % This is an OR statement in prolog
     assertion(Type==true ; Type==false).
 
-% test(sumTypes_2, [nondet]) :-
-%     sumTypes(bool, false).
-%     % This is an OR statement in prolog
-%     % assertion(Type==true ; Type==false).
+test(sumTypes_2, [nondet]) :-
+    sumTypes(bool, false).
 
-% test(ec_tupleType1, [nondet]) :-
-%     tupleStatement( fst(int, int), T),
-%     assertion(T==int).
+test(tuple_fst, [nondet]) :-
+    typeStatement(fst(int, string), T),
+    assertion(T==int).
+
+test(tuple_snd, [nondet]) :-
+    typeStatement(snd(int, string), T),
+    assertion(T==string).
 
 :-end_tests(typeInf).
