@@ -1,4 +1,5 @@
 :- dynamic gvar/2.
+% This causes the test file not to load
 % :- discontiguous plunit_typeInf:gvar/2.
 
 typeExp(X, int) :-
